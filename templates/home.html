@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+
+    <!-- Custom CSS for Hover Effects -->
+    <style>
+      .navbar-nav .nav-item .nav-link {
+        transition: color 0.2s ease-in-out;
+      }
+      .navbar-nav .nav-item .nav-link:hover {
+        color: #FFD700; /* Gold color for hover effect */
+      }
+    </style>
+
+    <title>API Server Table</title>
+  </head>
+  <body>
+    <header>
+      <div class="navbar navbar-dark bg-dark box-shadow">
+        <div class="container d-flex justify-content-between">
+          <a href="#" class="navbar-brand d-flex align-items-center">
+            <strong>Flask Monitoring Home</strong>
+          </a>
+          <nav class="navbar navbar-expand">
+            <div class="collapse navbar-collapse">
+              <ul class="navbar-nav">
+                <li class="nav-item">
+                  <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/vids">VIDS</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/vsds">VSDS</a>
+                </li>
+              </ul>
+            </div>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <main role="main">
+      <div class="album py-5 bg-light">
+        <div class="container">
+          <h2 class="mb-4">API Server Table</h2>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>API</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="apiTableBody">
+              <!-- Table rows will be dynamically added here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+
+    <footer class="text-muted">
+      <div class="container">
+        <p class="float-right">
+          <a href="#">Back to top</a>
+        </p>
+        <p>Anything that can be added on footer</p>
+        <p>API Server <a href="../../">HomePage</a></p>
+      </div>
+    </footer>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        fetch('/routes')
+          .then(response => response.json())
+          .then(data => {
+            var apiTableBody = document.getElementById('apiTableBody');
+            data.forEach(route => {
+              var newRow = document.createElement('tr');
+              newRow.innerHTML = `
+                <td>${route.url}</td>
+                <td>
+                  <button type="button" class="btn btn-success" onclick="startRoute('${route.url}')">Start</button>
+                  <button type="button" class="btn btn-danger" onclick="stopRoute('${route.url}')">Stop</button>
+                </td>
+              `;
+              apiTableBody.appendChild(newRow);
+            });
+          });
+      });
+
+      function startRoute(url) {
+        fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ action: 'start' })
+        })
+          .then(response => response.json())
+          .then(data => alert(data.message));
+      }
+
+      function stopRoute(url) {
+        fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ action: 'stop' })
+        })
+          .then(response => response.json())
+          .then(data => alert(data.message));
+      }
+    </script>
+  </body>
+</html>
